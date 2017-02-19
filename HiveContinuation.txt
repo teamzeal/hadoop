@@ -1,0 +1,265 @@
+Hive Continuation:
+------------------
+
+Recap:
+
+What is Hadoop? [Both]
+	> Storage
+	> Processing
+
+What is PIG? [Processing]
+	> Storage
+	> Processing
+ 
+What is HIVE? [Both]
+	> Storage > Tables > File/Folder
+	> Processing > SQL > MR
+	
+How partitions are realised in HIVE?
+	> Sub Folders
+	
+India/tn.txt
+India/ap.txt
+
+hql> select * from India where state = 'TN';
+
+India/TN/tn.txt
+India/AP/ap.txt
+
+India/TN/DIST1/tn.txt
+India/TN/DIST2/tn.txt
+India/AP/DIST1/ap.txt
+
+
+This way we implement partitions in HIVE.
+if its a normal RDBMS, partitions are done by system.
+
+if we name them => static partitions
+if systme names them => dynamic partitions
+	it need atleast on static partition
+	and it must be a leaf directory
+
+Buckets:
+-------
+
+What are buckets, they are seperators/segregators/bins
+
+sample vs population
+
+example: pokada, male female survey, age buckets
+
+benefit: better sample + faster join
+
+MetaStore:
+----------
+
+File/Folder => Tables
+MR => SQL
+
+why are we going for HIVE when PIG is there for analysis?
+	> if you want storage to be persistent
+	
+How HIVE remembers that you created this table today?
+	> hive store this metadata in a place called metastore
+	
+What is MetaStore? it an RDBMS, default one is DERBY
+	
+hql> select * from India;
+
+@metastore
+India => hdfs:// .. .. /India
+
+Managed/Default/Normal/HIVE/INTERNAL Tables (synonyms)
+
+External Table; we wont load data
+
+Internal Table => 1. create table ; 2. load table
+External Table => 1. crate table with location of folder
+
+CREATE TABLE ekanta(....)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+LOAD DATA '/path' INTO TABLE ekanta;
+
+if you want to project a table for querying purpose on the fly, you can go for external tables;
+
+CREATE EXTERNAL TABLE bekanta(....)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/path' ;
+
+/imp/file => siva/MR 
+/imp/file => manoj/PIG 
+/imp/file => ekanta/HIVE 
+
+DROP EXTERNAL TABLE => only metadata deleted
+
+Schema on Read Vs Schema on Write:
+=================================
+
+Some DB.
+
+hi,hello,how-are,you
+
+CREATE TABLE manoj (a VARCHAR, b VARCHAR, c VARCHAR, d VARCHAR);
+
+CREATE TABLE manoj (a VARCHAR, b VARCHAR);
+
+CREATE TABLE manoj (a VARCHAR);
+
+before loading data you need to provide schema definition. schema on write. 
+	schema is used at the time of writing data.
+
+in HIVE: schema on READ.
+
+CREATE TABLE ekanta(....)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+CREATE TABLE ekanta(....)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '-'
+STORED AS TEXTFILE;
+
+-- by using external, we can project 2 or many schemas on it
+CREATE EXTERNAL TABLE bekanta(....)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/path' ;
+
+CREATE EXTERNAL TABLE rekanta(....)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '-'
+STORED AS TEXTFILE
+LOCATION '/path' ;
+
+schema on read. using the schema at the time of reading the data.
+
+grunt> x = foreach a generate b,c; => interactive mode
+
+java> 60 lines => batch mode
+--------------------------------------------------------
+Real Time Query: directly query data
+
+Batch Processing: you do the operations together in a night, generate data and keep it ready for querying
+
+1 TB file => MR => word count
+
+keep them in table => WEB => realtime
+
+95% SQL only we use in hive; "SELECT"
+
+DELETE/UPDATE/INSERT => not there => dml => at which level of granularity => record level
+
+WORM => write once read many => data warehouse
+
+operations => data operations => writes needed => RDBMS 
+
+RDBMS => normal data => 40 lakhs records
+
+archival of data or purging of data
+
+HIVE => no limts
+
+can you give me the last 5 years bank statement by loging into netbanking? 12, 24 months
+
+HIVE => like a data warehouse => only for reporting/analysis on lot of data
+
+1B recrods data => hql => small data => exposed => JDBC DRIVER => BI tool
+1B recrods data => hql => small data => exposed => JDBC DRIVER / Hadoop API=> sqoop => RDBMS => BI tool
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
